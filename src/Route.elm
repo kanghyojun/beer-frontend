@@ -8,6 +8,8 @@ type Route
     = Login
 
 
+{-| See <https://github.com/evancz/url-parser> for more information.
+-}
 createRoute : Navigation.Location -> Maybe Route
 createRoute l =
     let

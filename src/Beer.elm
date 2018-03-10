@@ -52,7 +52,7 @@ update msg model =
                     Login.update loginMsg model.login
             in
             ( { model | login = newLoginModel }
-            , Cmd.none
+            , Cmd.map LoginMsg cmd
             )
 
         RouteChanged r ->

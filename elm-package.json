@@ -1,10 +1,9 @@
 {
     "version": "0.1.0",
     "summary": "Rating beer that you were drinking today.",
-    "repository": "https://github.com/admire93/beer-elm",
+    "repository": "https://github.com/admire93/beer-frontend",
     "license": "BSD3",
     "source-directories": [
-        ".",
         "src"
     ],
     "exposed-modules": [],

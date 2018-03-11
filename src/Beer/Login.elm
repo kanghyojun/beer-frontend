@@ -1,12 +1,24 @@
-module Main exposing (..)
+module Beer.Login exposing (Model, Msg, empty, update, view)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+{-| Login page.
+
+@docs Model
+@docs Msg
+@docs empty
+@docs update
+@docs view
+
+-}
+
+import Html
+import Html.Attributes as Attr
+import Html.Events as Event
 import Http
 import Json.Decode as JsonDec
 
 
+{-| Login model
+-}
 type alias Model =
     { typing : String
     , token : Maybe (Result String String)
@@ -14,27 +26,15 @@ type alias Model =
     }
 
 
-main : Program Never Model Msg
-main =
-    Html.program
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
+{-| Empty of Model
+-}
+empty : Model
+empty =
+    { typing = "", token = Nothing, login = False }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( { typing = "", token = Nothing, login = False }
-    , Cmd.none
-    )
-
-
-
--- UPDATE
-
-
+{-| Login page message
+-}
 type Msg
     = GetToken (Result Http.Error String)
     | Change String
@@ -60,6 +60,8 @@ httpErrorToString e =
             "Unexpected error occured"
 
 
+{-| Login page update function
+-}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -101,11 +103,9 @@ decodeToken =
     JsonDec.at [ "token" ] JsonDec.string
 
 
-
--- VIEW
-
-
-view : Model -> Html Msg
+{-| Login page view function
+-}
+view : Model -> Html.Html Msg
 view model =
     case model.token of
         Nothing ->
@@ -120,9 +120,9 @@ view model =
                     loginView e model
 
 
-completeView : Html Msg
+completeView : Html.Html Msg
 completeView =
-    h1 [] [ text "Complete" ]
+    Html.h1 [] [ Html.text "Complete" ]
 
 
 isOk : Result x b -> Bool
@@ -135,14 +135,14 @@ isOk r =
             False
 
 
-loginView : Result String String -> Model -> Html Msg
+loginView : Result String String -> Model -> Html.Html Msg
 loginView err model =
     let
         blockTyping =
             model.login && isOk err
     in
-    div []
-        [ text
+    Html.div []
+        [ Html.text
             (case err of
                 Ok _ ->
                     ""
@@ -150,15 +150,15 @@ loginView err model =
                 Err e ->
                     e
             )
-        , input
-            [ placeholder "Input phonenumber"
-            , disabled blockTyping
-            , onInput Change
+        , Html.input
+            [ Attr.placeholder "Input phonenumber"
+            , Attr.disabled blockTyping
+            , Event.onInput Change
             ]
             []
-        , button
-            [ onClick Login, disabled blockTyping ]
-            [ text
+        , Html.button
+            [ Event.onClick Login, Attr.disabled blockTyping ]
+            [ Html.text
                 (if model.login then
                     "Try to login..."
                  else
@@ -166,12 +166,3 @@ loginView err model =
                 )
             ]
         ]
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
